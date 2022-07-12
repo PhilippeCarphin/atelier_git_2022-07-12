@@ -1,0 +1,1392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Notions fondamentales de git</title>
+<!-- 2022-07-12 Tue 18:32 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Org-mode">
+
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<style>
+/* org mode styles on top of twbs */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-size: 18px;
+    margin-bottom: 105px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 101px;
+    background-color: #f5f5f5;
+}
+
+footer > div {
+    padding: 10px;
+}
+
+footer p {
+    margin: 0 0 5px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#table-of-contents {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+blockquote p {
+    font-size: 18px;
+}
+
+pre {
+    font-size: 16px;
+}
+
+.footpara {
+    display: inline-block;
+}
+
+figcaption {
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+  padding-bottom: 15px;
+}
+
+/* from twbs docs */
+
+.bs-docs-sidebar.affix {
+    position: static;
+}
+@media (min-width: 768px) {
+    .bs-docs-sidebar {
+        padding-left: 20px;
+    }
+}
+
+/* All levels of nav */
+.bs-docs-sidebar .nav > li > a {
+    display: block;
+    padding: 4px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #999;
+}
+.bs-docs-sidebar .nav > li > a:hover,
+.bs-docs-sidebar .nav > li > a:focus {
+    padding-left: 19px;
+    color: #A1283B;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 1px solid #A1283B;
+}
+.bs-docs-sidebar .nav > .active > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active:focus > a {
+    padding-left: 18px;
+    font-weight: bold;
+    color: #A1283B;
+    background-color: transparent;
+    border-left: 2px solid #A1283B;
+}
+
+/* Nav: second level (shown on .active) */
+.bs-docs-sidebar .nav .nav {
+    display: none; /* Hide by default, but at >768px, show it */
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav > li > a:focus {
+    padding-left: 29px;
+}
+.bs-docs-sidebar .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav > .active:focus > a {
+    padding-left: 28px;
+    font-weight: 500;
+}
+
+/* Nav: third level (shown on .active) */
+.bs-docs-sidebar .nav .nav .nav {
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 40px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav .nav > li > a:focus {
+    padding-left: 39px;
+}
+.bs-docs-sidebar .nav .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav .nav > .active:focus > a {
+    padding-left: 38px;
+    font-weight: 500;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-docs-sidebar .nav > .active > ul {
+        display: block;
+    }
+    /* Widen the fixed sidebar */
+    .bs-docs-sidebar.affix,
+    .bs-docs-sidebar.affix-bottom {
+        width: 213px;
+    }
+    .bs-docs-sidebar.affix {
+        position: fixed; /* Undo the static from mobile first approach */
+        top: 20px;
+    }
+    .bs-docs-sidebar.affix-bottom {
+        position: absolute; /* Undo the static from mobile first approach */
+    }
+    .bs-docs-sidebar.affix .bs-docs-sidenav,.bs-docs-sidebar.affix-bottom .bs-docs-sidenav {
+        margin-top: 0;
+        margin-bottom: 0
+    }
+}
+@media (min-width: 1200px) {
+    /* Widen the fixed sidebar again */
+    .bs-docs-sidebar.affix-bottom,
+    .bs-docs-sidebar.affix {
+        width: 263px;
+    }
+}
+</style>
+<script>
+$(function() {
+    'use strict';
+
+    $('.bs-docs-sidebar li').first().addClass('active');
+
+    $(document.body).scrollspy({target: '.bs-docs-sidebar'});
+
+    $('.bs-docs-sidebar').affix();
+});
+</script>
+</head>
+<body>
+<div id="content" class="container">
+<div class="row"><div class="col-md-3 col-md-push-9"><nav id="table-of-contents">
+<div id="text-table-of-contents" class="bs-docs-sidebar">
+<ul class="nav">
+<li><a href="#sec-1">1. Déroulement et objectifs</a>
+<ul class="nav">
+<li><a href="#sec-1-1">1.1. Objectif principal</a></li>
+<li><a href="#sec-1-2">1.2. Déroulement</a></li>
+<li><a href="#sec-1-3">1.3. Déroulement</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. Dictons</a>
+<ul class="nav">
+<li><a href="#sec-2-1">2.1. Git est facile mais &#x2026;</a></li>
+<li><a href="#sec-2-2">2.2. Never git pull</a></li>
+<li><a href="#sec-2-3">2.3. Never use 'And'</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. Notions fondamentales</a>
+<ul class="nav">
+<li><a href="#sec-3-1">3.1. Avant git</a></li>
+<li><a href="#sec-3-2">3.2. Un commit</a></li>
+<li><a href="#sec-3-3">3.3. Le graphe de commits</a></li>
+<li><a href="#sec-3-4">3.4. Branches</a></li>
+<li><a href="#sec-3-5">3.5. Remote</a></li>
+<li><a href="#sec-3-6">3.6. Vocabulaire spécial</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4. Moyens de savoir ce qui se passe</a>
+<ul class="nav">
+<li><a href="#sec-4-1">4.1. Gitk</a></li>
+<li><a href="#sec-4-2">4.2. Commande `git logl`</a></li>
+<li><a href="#sec-4-3">4.3. Le prompt</a></li>
+</ul>
+</li>
+<li><a href="#sec-5">5. Applications</a></li>
+<li><a href="#sec-6">6. Commandes</a>
+<ul class="nav">
+<li><a href="#sec-6-1">6.1. À faire tout le temps:</a></li>
+<li><a href="#sec-6-2">6.2. Faire des commits</a></li>
+<li><a href="#sec-6-3">6.3. Checkout</a></li>
+<li><a href="#sec-6-4">6.4. Fetch, Push</a></li>
+<li><a href="#sec-6-5">6.5. Merge rebase</a></li>
+<li><a href="#sec-6-6">6.6. Pull</a></li>
+<li><a href="#sec-6-7">6.7. Gitignore</a></li>
+</ul>
+</li>
+<li><a href="#sec-7">7. Configurations obligatoires</a>
+<ul class="nav">
+<li><a href="#sec-7-1">7.1. Gitk</a></li>
+<li><a href="#sec-7-2">7.2. Alias git</a></li>
+<li><a href="#sec-7-3">7.3. Prompt string</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+</div><div class="col-md-9 col-md-pull-3"><h1 class="title">Notions fondamentales de git</h1>
+
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Déroulement et objectifs</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Objectif principal</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Savoir ce qui se passe avec notre entrepôt git
+</p>
+</div>
+
+<div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+Dans cette présentation nous allons apprendre divers moyen de savoir ce qui se
+passe avec notre entrepôt git.
+</p>
+
+<p>
+Étant donné une situation, une compréhension de l'état actuel de notre entrepôt
+git va nous permettre de trouver un moyen de régler cette situation sans se
+casser la tête.
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Déroulement</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>Notions fondamentales
+</li>
+<li>Outils pour savoir ce qui se passe
+</li>
+<li>Démonstrations live
+</li>
+<li>Discussion
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> Déroulement</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Prise de notes : Ce document contient des notes cachées
+</p>
+
+<p>
+Questions : le bon moment est quand <b>vous</b> vous posez la question
+</p>
+
+<p>
+Flexibilité
+</p>
+</div>
+
+<div id="outline-container-sec-1-3-1" class="outline-4">
+<h4 id="sec-1-3-1"><span class="section-number-4">1.3.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+Nous allons commencer par une discussion des notions fondamentales de git.
+</p>
+
+<p>
+Ensuite, nous allons introduire trois outils qui nous aident à visualiser l'état
+de notre entrepôt.
+</p>
+
+<p>
+Finalement, nous allons examiner comment les opérations les plus importantes de
+git changent l'état de notre entrepôt.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Dictons</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Git est facile mais &#x2026;</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Git est facile, mais découvrir que git est facile est difficile.
+</p>
+</div>
+
+<div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+Git est souvent une source de confusion et c'est normal.  Mais comparons git à
+apprendre un instrument de musique.
+</p>
+
+<p>
+Certainement mon inhabilité de jouer de la guitare comme Joe Satriani, ce n'est
+pas parce que jouer comme Joe est facile et j'ai un bloquage mental qui
+m'empêche de jouer comme lui.
+</p>
+
+<p>
+Par contre dans git, il faut le voir comme ça.  Ça demande d'une part de mettre
+de côté son égo.  Personne n'aime être incapable de comprendre quelque chose de
+facile.
+</p>
+
+<p>
+Le but de mon énoncé est le suivant:
+</p>
+
+<p>
+Dites vous que les choses devraient être faciles, et si quelque chose vous
+apparaît difficile, vous venez de détecter un bloquage mental quelconque,
+parlez-en à votre expert de git le plus proche.
+</p>
+
+<p>
+Et surtout pour la présentation: si quelque chose vous apparaît le moindrement
+difficile, parlez en, c'est vraiment important.
+</p>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Never git pull</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Hein quoi?
+</p>
+</div>
+
+<div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+La commande <code>git pull</code> est en fait simplement <code>git fetch &amp;&amp; git merge</code>.  La
+commande fetch va aller chercher des commits de l'entrepôt distant que je n'ai
+peut-être pas dans ma copie locale.
+</p>
+
+<p>
+La commande merge fusionne deux versions du code.
+</p>
+
+<p>
+Pourquoi voudrait-on fusionner des version du code dont on ne sait même pas
+qu'elles existent?
+</p>
+
+<p>
+À la place, faisons un <code>git fetch</code>, ensuite, nous pouvons utiliser <code>git logl</code>
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> Never use 'And'</h3>
+<div class="outline-text-3" id="text-2-3">
+</div><div id="outline-container-sec-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+Un commit devrait contenir un changement logique.  Ça peut être dans plusieurs
+fichiers mais on devrait pouvoir décrire le changement sans utiliser le mot
+"ET".
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Notions fondamentales</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Passer sur chaque notion rapidement et y revenir dans la démo
+</p>
+</div>
+
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Avant git</h3>
+<div class="outline-text-3" id="text-3-1">
+</div>
+
+<div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> Un paquet de snapshots</h4>
+<div class="outline-text-4" id="text-3-1-1">
+
+<figure>
+<p><img src="./resources/snapshots_wide.PNG" class="img-responsive" alt="snapshots_wide.PNG">
+</p>
+<figcaption><span class="figure-number">Figure 1:</span> Un paquet de snapshots</figcaption>
+</figure>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> On peut attacher des métadonnées aux snapshots</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+DEMO
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-1-3" class="outline-4">
+<h4 id="sec-3-1-3"><span class="section-number-4">3.1.3</span> On peut former un graphe</h4>
+<div class="outline-text-4" id="text-3-1-3">
+
+<figure>
+<p><img src="./resources/snapshots_graph_1_wide.png" class="img-responsive" alt="snapshots_graph_1_wide.png">
+</p>
+<figcaption><span class="figure-number">Figure 2:</span> Graphe de snapshots</figcaption>
+</figure>
+</div>
+</div>
+
+<div id="outline-container-sec-3-1-4" class="outline-4">
+<h4 id="sec-3-1-4"><span class="section-number-4">3.1.4</span> Meilleure disposition</h4>
+<div class="outline-text-4" id="text-3-1-4">
+
+<figure>
+<p><img src="./resources/snapshots_graph_layout_wide.png" class="img-responsive" alt="snapshots_graph_layout_wide.png">
+</p>
+<figcaption><span class="figure-number">Figure 3:</span> Graphe de snapshots avec meilleure disposition</figcaption>
+</figure>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3-1-5" class="outline-4">
+<h4 id="sec-3-1-5"><span class="section-number-4">3.1.5</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-3-1-5">
+<p>
+Cette section avait pour but d'introduire la notion de commit comme un snapshot
+avec des métadonnées qui contiennent entre autres une référence au snapshot
+duquel nous sommes parti pour créer le snapshot actuel.
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Un commit</h3>
+<div class="outline-text-3" id="text-3-2">
+<ul class="org-ul">
+<li>Commit <code>=</code> Snapshot + Métadonnées
+</li>
+
+<li>Commit + référence au parent permet de voir le commit comme un changement
+</li>
+</ul>
+<p>
+apporté au snapshot parent.
+</p>
+</div>
+
+<div id="outline-container-sec-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+Pour la prochaine discussion, nous allons voir un commit comme "Un snapshot de
+nos fichiers + des métadonnées (auteur, message, <b>parent</b>, &#x2026;) identifiés par
+leur SHA-1"
+</p>
+
+<p>
+Le dossier <code>.git</code> est une base de données de ces <b>commits</b>.
+</p>
+
+<p>
+Puisqu'un commit est un <b>snapshot</b> + <b>une référence à un autre snapshot</b>,
+on peut lui associer un ensemble de changements en le comparant à son parent.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2-2" class="outline-4">
+<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> Dualité de git (Snapshots vs Changements)</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+Nous allons en discuter plus tard quand nous aurons un vrai graphe à regarder.
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-3-2-2-1" name="sec-3-2-2-1"></a>Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span><br ><div class="outline-text-5" id="text-3-2-2-1">
+<p>
+Si les commits sont des changements, je peux reconstruire un snapshot de façon
+non-ambigue en combinant les changements de tous les commits qui sont
+"reachable" à partir de celui-ci.
+</p>
+
+<p>
+Si les commits sont des snapshots, je peux reconstruire les changements d'un
+commit en faisant un diff entre celui-ci et son parent.
+</p>
+
+<p>
+Donc un commit peut-être vu comme un snapshot et comme un changement et la
+nuance est un détail d'implémentation de git.
+</p>
+</div>
+</li></ol>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> Le graphe de commits</h3>
+<div class="outline-text-3" id="text-3-3">
+
+<figure>
+<p><img src="./resources/divine_rays_wide.png" class="img-responsive" alt="divine_rays_wide.png">
+</p>
+</figure>
+</div>
+</div>
+
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> Branches</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+<b>UNE BRANCHE EST UN POINTEUR SUR UN COMMIT QUI BOUGE LORS DE CERTAINES
+ OPÉRATIONS GIT</b>
+</p>
+
+<p>
+En particulier, ce n'est pas un "Y" dans le graphe de commits.
+</p>
+</div>
+
+<div id="outline-container-sec-3-4-1" class="outline-4">
+<h4 id="sec-3-4-1"><span class="section-number-4">3.4.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-3-4-1">
+<p>
+C'est vraiment important!  Même des vétérans de git peuvent voir leur
+compréhension de git augmenter en changeant leur perception de c'est quoi une
+branche.
+</p>
+
+<p>
+Pour un non-vétéran, c'est encore plus important.  Le langage classique dans la
+documentation de git ne traite pas les branches comme des pointeurs et je crois
+que c'est au détriment des utilisateurs.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-5" class="outline-3">
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> Remote</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+Ce n'est rien d'autre qu'un autre dépôt git comme le nôtre*.
+</p>
+
+<p>
+On veut savoir ce qui se passe avec cet autre dépôt et comprendre le lien avec
+notre copie locale.
+</p>
+</div>
+
+<div id="outline-container-sec-3-5-1" class="outline-4">
+<h4 id="sec-3-5-1"><span class="section-number-4">3.5.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-3-5-1">
+<p>
+L'asterisc est pour dire que techniquement un dépôt sur gitlab est un peu
+différent du dépôt.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-6" class="outline-3">
+<h3 id="sec-3-6"><span class="section-number-3">3.6</span> Vocabulaire spécial</h3>
+<div class="outline-text-3" id="text-3-6">
+<ul class="org-ul">
+<li>Copie de travail (worktree)
+</li>
+
+<li>Le commit sur lequel je suis
+</li>
+
+<li>La branche courante
+</li>
+</ul>
+</div>
+
+<div id="outline-container-sec-3-6-1" class="outline-4">
+<h4 id="sec-3-6-1"><span class="section-number-4">3.6.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-3-6-1">
+<p>
+La copie de travail, ce sont les fichiers de mon projet.  C'est tout ce qui est
+dans le dépôt excluant le contenu du dossier <code>.git</code>.
+</p>
+
+<p>
+Quand je fais <code>git diff</code> git me montre la différence entre ma copie de travail
+et le commit sur lequel je suis (vu comme un snapshot).
+</p>
+
+<p>
+Le commit sur lequel je suis est un commit particulier. Il est indiqué par
+<code>HEAD</code> dans la commande <code>git log</code> et par un point jaune dans <code>gitk</code>.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Moyens de savoir ce qui se passe</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Gitk</h3>
+<div class="outline-text-3" id="text-4-1">
+<ul class="org-ul">
+<li>Les commits
+</li>
+<li>La relation parent (les linges sont des flèches qui pointent vers le bas)
+</li>
+<li>Les branches
+</li>
+<li>Le commit sur lequel on est représenté par un point jaune
+</li>
+<li>La 'branche courante' est en caractère gras
+</li>
+<li>Les changements "stagés" et "non stagés" sont représentés par un point vert et
+</li>
+</ul>
+<p>
+rouge respectivement.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">alias <span style="color: #00d3d0;">gitk</span>=<span style="color: #79a8ff;">'gitk --all &amp;'</span>
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-4-1-1" class="outline-4">
+<h4 id="sec-4-1-1"><span class="section-number-4">4.1.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+Je prône l'utilisation de <code>gitk</code> pour visualiser les commits qui sont rentrés
+après un <code>git fetch</code> mais avant un <code>git merge</code>.
+</p>
+
+<p>
+Ces commits ne seraient pas visibles si <code>gitk</code> n'est pas lancé avec <code>--all</code>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Commande `git logl`</h3>
+<div class="outline-text-3" id="text-4-2">
+<ul class="org-ul">
+<li>Les commits
+</li>
+<li>La relation parent (les lignes sont des flèches qui pointent vers le bas)
+<div class="org-src-container">
+
+<pre class="src src-sh">git config --global alias.logl <span style="color: #79a8ff;">'log --oneline --graph --all'</span>
+</pre>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-sec-4-2-1" class="outline-4">
+<h4 id="sec-4-2-1"><span class="section-number-4">4.2.1</span> Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span></h4>
+<div class="outline-text-4" id="text-4-2-1">
+<p>
+C'est le moyen le plus rapide pour voir le graphe de commits.  On peut faire un
+<code>git fetch</code> suivi d'un <code>git logl</code>, on peut lire les messages des nouveaux
+commits et faire <code>git merge</code> si tout est beau.  Si on veut voir quels
+changements ces commits introduisent, on peut lancer <code>gitk</code> pour examiner de
+plus près.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> Le prompt</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+Démo, détails dans les notes
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Applications</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Recette: Nous allons, pour chaque opération, suivre les étapes suivantes:
+</p>
+<ul class="org-ul">
+<li>Constater l'état de l'entrepôt avant dans gitk
+</li>
+<li>Discuter quel effet la commande que nous voulons faire aura sur l'affichage de gitk
+</li>
+<li>Faire la commande
+</li>
+<li>Reloader gitk et vérifier nos prévisions.
+</li>
+</ul>
+</div>
+
+<div id="outline-container-sec-5-0-1" class="outline-4">
+<h4 id="sec-5-0-1"><span class="section-number-4">5.0.1</span> Commit</h4>
+<div class="outline-text-4" id="text-5-0-1">
+<p>
+Démo live
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-5-0-1-1" name="sec-5-0-1-1"></a>Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span><br ><div class="outline-text-5" id="text-5-0-1-1">
+<p>
+On fait des changements quelconque, ensuite on fait <code>git status</code> et on constate
+un fichier affiché en rouge.  On note aussi que la commande peut nous dire <code>On
+Branch &lt;branch_name&gt;</code>.
+</p>
+
+<p>
+Nous pouvons voir dans <code>gitk</code> un point rouge représentant les changement
+non-commités et non-ajoutés à l'index.
+</p>
+
+<p>
+Les changements en rouge dans <code>git status</code> ne feront pas partie du snapshot que
+nous préparons.  Il faut utiliser la commande <code>git add</code>.
+</p>
+
+<p>
+Après avoir fait <code>git add &lt;le_fichier&gt;</code>, la commande <code>git status</code> nous montre ce
+fichier en vert dans la section "Changes to be committed".  Nous pouvons voir
+dans <code>gitk</code> un point vert représentant les changement qui feront partie du
+snapshot (commit) que nous allons créer.
+</p>
+
+<p>
+S'il y a d'autres fichiers modifiés, leurs changements ne feront pas partie du
+snapshot que nous allons faire.
+</p>
+
+<p>
+Nous faisons un <code>git commit -m "bon message"</code>.  Ceci crée un nouveau commit qui
+a comme parent le commit sur lequel nous étions.  Nous pouvons aussi remarquer
+que la branche qui était en gras pointe sur un commit différent de celui qu'elle
+pointait avant que nous ayons fait notre commit.
+</p>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-5-0-2" class="outline-4">
+<h4 id="sec-5-0-2"><span class="section-number-4">5.0.2</span> Push</h4>
+<div class="outline-text-4" id="text-5-0-2">
+<p>
+Démo live
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-5-0-2-1" name="sec-5-0-2-1"></a>Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span><br ><div class="outline-text-5" id="text-5-0-2-1">
+<p>
+Lorsque nous faisons un push, la collection de snapshots est transférée à
+l'autre dépôt.  Ceci réussi toujours.
+</p>
+
+<p>
+L'autre partie du push concerne les branches (toujours vu comme des pointeurs de
+commits).  La commande <code>git push origin main</code> demande la chose suivante au dépôt
+distant:
+</p>
+
+<p>
+Je veux que tu fasses pointer ton pointeur <code>main</code> sur le commit qui est pointé
+par mon pointeur <code>main</code>.
+</p>
+
+<p>
+Nous avons vu durant les démos subséquentes que des commits peuvent être
+"perdus" s'ils ne sont pas pointés par une branche ou "reachable" à partir d'un
+commit pointé par une branche.
+</p>
+
+<p>
+Lors d'un push, si faire pointer <code>main</code> sur un autre commit rendrait des commits
+"unreachable", le serveur va refuser l'opération et donner un message plus ou
+moins utile.
+</p>
+
+<p>
+Dans ce cas, on fait un <code>git fetch</code> et on reload notre gitk.  On va pouvoir
+identifier ces commits.
+</p>
+
+<p>
+L'affichage de <code>gitk</code> nous montre le commit pointé par la branche <code>main</code> de
+gitlab dans des boîtes beiges et vertes.
+</p>
+
+<p>
+La plûpart du temps, la marche à suivre est de faire un merge, mais ne vous
+gênez pas pour regarder dans gitk et décider si vous voulez faire autre chose.
+</p>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-5-0-3" class="outline-4">
+<h4 id="sec-5-0-3"><span class="section-number-4">5.0.3</span> Checkout</h4>
+<div class="outline-text-4" id="text-5-0-3">
+<p>
+Démo live
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-5-0-3-1" name="sec-5-0-3-1"></a>Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span><br ><div class="outline-text-5" id="text-5-0-3-1">
+<p>
+Nous n'en avons pas parlé durant la discussion.  Un checkout met notre copie de
+travail exactement comme le snapshot donné à la commande.
+</p>
+
+<p>
+Si on fait un checkout en utilisant une branche, l'opération va aussi mettre
+cette branche comme notre "branche courante" c'est-à-dire que cette branche va
+bouger quand nous allons faire des commits.
+</p>
+
+<p>
+Durant la démo, nous avons parlé de "Detatched head state".  Cet état signifie
+que nous n'avons pas de branche courante.
+</p>
+
+<p>
+Nous pouvons toujours faire des commits mais nous risquons de créer des commits
+qui seront "unreachable".
+</p>
+
+<p>
+Si on veut faire un checkout d'un certain commit et faire des commits à partir
+de là, nous devrions créer et checkouter une branche:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">git checkout 6b381dbc319
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">long warning plus ou moins clair pour nous dire qu'on a pas de branche courante</span>
+git branch &lt;nouvelle branche&gt;
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Ceci cr&#233;e une branche pointant sur le commit sur lequel nous sommes</span>
+git checkout &lt;nouvelle branche&gt;
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Ceci checkout le commit point&#233; par la branche (nous &#233;tions d&#233;j&#224; dessus)</span>
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">et la met comme branche courante et donc elle bougera avec nous</span>
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">alors que nous faisons des commits</span>
+&lt;faire des commits&gt;
+</pre>
+</div>
+
+<p>
+Par contre c'est important de comprendre que le résultat final serait le même si
+on avait fait des commits en detatched head et qu'on avait créé une branche
+pointant sur le dernier de ces commits après les avoir faits.  On a le même
+graphe avec les mêmes commits et les branches qui pointent aux mêmes places.
+</p>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-5-0-4" class="outline-4">
+<h4 id="sec-5-0-4"><span class="section-number-4">5.0.4</span> Fetch</h4>
+<div class="outline-text-4" id="text-5-0-4">
+<p>
+Démo live
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-5-0-4-1" name="sec-5-0-4-1"></a>Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span><br ><div class="outline-text-5" id="text-5-0-4-1">
+<p>
+La commande <code>git fetch</code> va chercher les nouveaux commits d'un dépôt distant et
+met à jour les branches <code>remotes/origin/&lt;nom_de_branche&gt;</code> qui nous permettent de
+savoir sur quel commit pointe la branche <code>&lt;nom_de_branche&gt;</code> sur le dépôt distant.
+</p>
+
+<p>
+Un push n'inclu pas de fetch.  Donc ça se peut qu'on fasse un push et que gitlab
+nous répondent "si je modifiais mon main pour qu'il pointe sur le commit pointé
+par ton main, ça perdrait des commits".
+</p>
+
+<p>
+La première chose à faire, sans hésitation, c'est de faire un fetch pour obtenir
+et possiblement inspecter ces nouveaux commits dans <code>gitk</code> (avec <code>--all</code>).
+</p>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-5-0-5" class="outline-4">
+<h4 id="sec-5-0-5"><span class="section-number-4">5.0.5</span> Merge</h4>
+<div class="outline-text-4" id="text-5-0-5">
+<p>
+Démo live
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-5-0-5-1" name="sec-5-0-5-1"></a>Notes&#xa0;&#xa0;&#xa0;<span class="tag"><span class="badge noexport_reveal">noexport_reveal</span></span><br ><div class="outline-text-5" id="text-5-0-5-1">
+<p>
+Avec un <code>git merge</code> git tentera de fusionnner deux snapshots.
+</p>
+
+<p>
+La commande complète est <code>git merge &lt;commit1&gt; &lt;commit2&gt;</code> mais si nous donnons
+aucun argument, git peut les déduire.
+</p>
+
+<p>
+Avec juste <code>git merge</code>, si j'ai une branche courante, git va fusionner le commit
+pointé par celle-ci et le commit pointé par <code>remotes/origin/&lt;ma branche courante&gt;</code>.
+</p>
+
+<p>
+Si je spécifie un argument, git va fusionner le commit sur lequel je suis avec
+le commit passé en argument.
+</p>
+
+<p>
+En réalité, git fait plus que fusionner deux snapshots.  Git va trouver le
+premier commit qui est "reachable" à partir des deux commits à fusionner.  Ce
+commit peut être identifié avec la commande <code>git merge-base &lt;commit1&gt;
+&lt;commit2&gt;</code>.
+</p>
+
+<p>
+À partir de ce commit, git va appliquer l'ensemble des changements introduits
+par les commits entre le merge base et <code>&lt;commit1&gt;</code> et les changements entre le
+merge-base et <code>&lt;commit_2&gt;</code>.
+</p>
+
+<p>
+Durant ce processus, il est possible que deux commits modifient le même endroit
+du même fichier et créent des conflits.
+</p>
+
+<p>
+Dans ce cas, il faut faire <code>git status</code> pour identifier les fichiers qui ont des
+conflits.
+</p>
+
+<p>
+Pour chacun de ces fichiers, git nous indique où les conflits ont eu lieu.
+</p>
+
+<p>
+Il est <b>indispensable</b> d'avoir fait un fetch et ouvert <code>gitk</code> pour pouvoir
+déterminer comment régler ces conflits.
+</p>
+
+<p>
+Si deux personnes ont chacun ajouté du code qui fait la même chose, nous voulons
+probablement garder seulement une version.
+</p>
+
+<p>
+Si deux personnes sont tous les deux allés ajouter une fonction à la fin du même
+fichier, possiblement que nous voulons garder les deux fonctions.
+</p>
+</div>
+</li></ol>
+</div>
+
+
+<div id="outline-container-sec-5-0-6" class="outline-4">
+<h4 id="sec-5-0-6"><span class="section-number-4">5.0.6</span> Rebase interactif</h4>
+<div class="outline-text-4" id="text-5-0-6">
+<p>
+Maintenant que nous voyons les branches comme des pointeurs, c'est plus facile
+de faire un rebase interactif sans avoir peur.
+</p>
+
+<p>
+Pour en savoir plus sur les rebase intéractifs, cherchez sur Google ou YouTube
+pour une démo.  Mais gardez en tête les trucs que j'ai montré dans la démo:
+</p>
+<ul class="org-ul">
+<li>Créer une branche <code>__save__</code>
+</li>
+<li>Faites votre rebase
+</li>
+<li>Faites un diff avec le snapshot pointé par <code>__save__</code>
+</li>
+<li>S'il n'y a aucunes différences le rebase est un succès
+</li>
+<li>S'il y a des différences, on peut recommencer
+</li>
+</ul>
+
+<p>
+Premièrement, créer une branche de secours pointant sur le commit sur lequel
+nous sommes:
+</p>
+<pre class="example">
+git branch __save__
+</pre>
+
+<p>
+Ensuite, déterminer combien de commits <code>&lt;n&gt;</code> nous voulons "rebaser" et commencer le
+rebase:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">git rebase HEAD~&lt;n&gt;
+</pre>
+</div>
+
+<p>
+La référence <code>HEAD~n</code> est une facon de dire <code>Le parent du parent du parent (n
+fois) de =HEAD</code>.
+</p>
+
+<p>
+Si notre éditeur est Vim, on peut faire <code>git rebase -i HEAD~n</code> et si on voit
+qu'on n'a pas le bon range de commits, on peut quitter avec <code>:cq</code>.  Ceci demande
+à vim de retourner avec un code d'erreur non-nul.  Git va voir ça et compredre
+de ne pas faire le rebase.
+</p>
+
+<p>
+Une fois le rebase fait on peut faire un diff avec le snapshot pointé par
+<code>__save__</code>.
+</p>
+
+<p>
+C'est possible d'avoir bien fait le rebase et d'avoir des différences.  Par
+exemple, si un commit n'a rien fait d'autre que d'introduire des prints pour du
+déboguage, on pourrait vouloir exclure ces changements de la version finale en
+effaçant la ligne de ce commit dans le fichier "rebase-todo".
+</p>
+
+<p>
+Dans ce cas là, on fait un diff avec la branche <code>__save__</code> et on confirme que le
+diff ne contient que des print.
+</p>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Commandes</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Les seules commandes qu'on a besoin de savoir:
+</p>
+</div>
+
+<div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> À faire tout le temps:</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+
+<pre class="src src-sh">git status
+</pre>
+</div>
+<p>
+Moi j'ai l'alias <code>git st</code> (voir plus bas).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> Faire des commits</h3>
+<div class="outline-text-3" id="text-6-2">
+<div class="org-src-container">
+
+<pre class="src src-sh"><span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Voir ce qui se passe</span>
+git status
+
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Voir ce qui se passe dans les fichiers</span>
+git diff
+
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Ajouter un fichier modifi&#233; &#224; "l'index" (le snapshot que nous sommes en train de cr&#233;er)</span>
+git add &lt;un_fichier&gt;
+
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Enlever un fichier de l'index (snapshot que nous sommes sur le point de cr&#233;er)</span>
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">C'est comme faire un undo d'un add.</span>
+git reset &lt;un fichier&gt;
+
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Cr&#233;er le nouveau snapshot</span>
+git commit -m <span style="color: #79a8ff;">"Un excellent message de commit"</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-6-3" class="outline-3">
+<h3 id="sec-6-3"><span class="section-number-3">6.3</span> Checkout</h3>
+<div class="outline-text-3" id="text-6-3">
+<div class="org-src-container">
+
+<pre class="src src-sh">git checkout &lt;REF&gt;
+</pre>
+</div>
+
+<p>
+Sortir le snapshot désigné par <code>&lt;REF&gt;</code> (hash de commit, branche ou tag, un "ref"
+dans git désigne n'importe quelle façon de spécifier un commit).
+</p>
+
+<p>
+Si nous utilisons une branche, la commande va mettre cette branche comme notre
+branche courante et donc celle-ci va se déplacer avec nous lorsque nous faisons
+des commits.
+</p>
+
+<p>
+Si nous utilisons un hash ou un tag, nous serons en "detatched head state" (no
+big deal maintenant qu'on sait ce que ça veut dire).  On risque de perdre des
+commits si on en fait lorsque nous sommes dans cet état, mais git vas nous
+avertir au moment ou on les perdrait.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6-4" class="outline-3">
+<h3 id="sec-6-4"><span class="section-number-3">6.4</span> Fetch, Push</h3>
+<div class="outline-text-3" id="text-6-4">
+<div class="org-src-container">
+
+<pre class="src src-sh"><span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Savoir ce qui se passe avec un d&#233;p&#244;t distant (remote).</span>
+git fetch
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-sh"><span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Envoyer nos nouveaux snapshots au remote "origin" de demander</span>
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">que celui-ci fasse pointer sa branche master sur le commit</span>
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">point&#233; par ma branche master.</span>
+git push origin master
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-6-5" class="outline-3">
+<h3 id="sec-6-5"><span class="section-number-3">6.5</span> Merge rebase</h3>
+<div class="outline-text-3" id="text-6-5">
+<div class="org-src-container">
+
+<pre class="src src-sh"><span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">fusionner deux snapshots du code en combinant deux ensembles de</span>
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">changements</span>
+git merge &lt;commit&gt;
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-6-6" class="outline-3">
+<h3 id="sec-6-6"><span class="section-number-3">6.6</span> Pull</h3>
+<div class="outline-text-3" id="text-6-6">
+<p>
+Ne jamais faire git pull!
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6-7" class="outline-3">
+<h3 id="sec-6-7"><span class="section-number-3">6.7</span> Gitignore</h3>
+<div class="outline-text-3" id="text-6-7">
+<p>
+Avoir des fichiers "untracked" qui ne sont pas ignorés n'est jamais bon.
+</p>
+
+<p>
+Si un fichier est untracked mais devrait l'être, on l'ajoute aux fichiers
+trackés en faisant un commit.
+</p>
+
+<p>
+Si un fichier est untracked et devrait être ignoré, on ajoute une ligne dans le
+fichier <code>.gitignore</code> du dépôt (on le crée s'il n'existe pas).
+</p>
+
+<p>
+Le fichier <code>.gitignore</code> est comme n'importe quel fichier important de notre dépôt.  Il
+devraît être tracké et on doit donc faire un commit quand on le modifie ou si on
+le crée.
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Configurations obligatoires</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Chacune des choses ici est essentielle.  Mieux on connaît l'état de notre
+entrepôt, plus savoir comment faire ce qu'on veut faire est facile.
+</p>
+</div>
+
+<div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> Gitk</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+Pour toujours avoir <code>--all</code> avec notre commande <code>gitk</code> et le <code>&amp;</code> est pratique
+pour pas que <code>gitk</code> bloque notre shell:
+</p>
+
+<pre class="example">
+# ~/.profile.d/interactive/post
+alias gitk='gitk --all &amp;'
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> Alias git</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+Pour avoir les alias <code>git st</code> et <code>git logl</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-diff"><span style="color: #a8a8a8;">~/.gitconfig</span>
+<span style="color: #a8a8a8;">[alias]</span>
+<span style="color: #44bc44; background-color: #203d20; font-weight: bold;">+</span><span style="color: #b4ddb4; background-color: #203d20;">     st = status</span>
++   logl = log --oneline --graph --all
+</pre>
+</div>
+
+<p>
+Ou en exécutant les commandes
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">git config --global alias.logl <span style="color: #79a8ff;">"log --oneline --graph --all"</span>
+git config --global alias.st status
+</pre>
+</div>
+
+<p>
+Vous pouvez choisir d'autres noms mais vous devez avoir ces alias.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-7-3" class="outline-3">
+<h3 id="sec-7-3"><span class="section-number-3">7.3</span> Prompt string</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+Nous utilisons le fichier <code>git-prompt.sh</code> qui peut être obtenu avec
+</p>
+<pre class="example">
+wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
+</pre>
+
+<p>
+Sourcer ce script donne la fonction <code>__git_ps1</code> qui peut être utilisée pour
+inclure de l'information sur notre dépôt git dans notre invite de commande.
+</p>
+
+<p>
+Voici un exemple:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh"><span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">wget https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -O &lt;your choice&gt;</span>
+source ~/.git-prompt.sh
+
+<span style="color: #feacd0;">configure_prompt_command_basic</span>(){
+    <span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">From the `man bash`</span>
+    <span style="color: #a8a8a8;">#  </span><span style="color: #a8a8a8;">PROMPT_COMMAND</span>
+    <span style="color: #a8a8a8;">#                </span><span style="color: #a8a8a8;">If set, the value is executed as a command prior to issuing each primary prompt.</span>
+    <span style="color: #00d3d0;">GIT_PS1_SHOWUNTRACKEDFILES</span>=true
+    <span style="color: #00d3d0;">GIT_PS1_SHOWUPSTREAM</span>=verbose
+    <span style="color: #00d3d0;">GIT_PS1_SHOWCOLORHINTS</span>=true
+    <span style="color: #00d3d0;">GIT_PS1_SHOWDIRTYSTATE</span>=true
+    <span style="color: #00d3d0;">PROMPT_COMMAND</span>=<span style="color: #79a8ff;">'__git_ps1 "[\u@\h \w" "] \$ "'</span>
+}
+
+configure_prompt_command
+<span style="color: #a8a8a8;">################################ </span><span style="color: #a8a8a8;">END BASIC PART</span>
+
+<span style="color: #b6a0ff;">function</span> <span style="color: #feacd0;">my_git_ps1_color</span>(){
+    <span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">See documentation at the top of git-prompt.sh:</span>
+    <span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">Calling __git_ps1 with arguments causes it to act by setting PS1</span>
+    local <span style="color: #00d3d0;">color</span>=<span style="color: #79a8ff;">"\[\033[35m\]"</span>
+    local <span style="color: #00d3d0;">reset</span>=<span style="color: #79a8ff;">"\[\033[0m\]"</span>
+    local <span style="color: #00d3d0;">pre</span>=<span style="color: #79a8ff;">"${color}[\u@\h \w${reset}"</span>
+    local <span style="color: #00d3d0;">post</span>=<span style="color: #79a8ff;">"${color}] \$ ${reset}"</span>
+    <span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">This call to __git_ps1</span>
+    __git_ps1 <span style="color: #79a8ff;">"${pre}"</span> <span style="color: #79a8ff;">"${post}"</span>
+    <span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">will set PS1: PS1=${pre}${git_stuff}${post}</span>
+    <span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">And then PS1 will be evaluated as normal.</span>
+}
+
+<span style="color: #a8a8a8;"># </span><span style="color: #a8a8a8;">See ~phc001/.simple_git_ps1_example.sh for a cool prompt string</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div></div></div>
+<footer id="postamble" class="">
+<div><p class="date">Created: 2022-07-12 Tue 18:32</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="http://orgmode.org">Org-mode</a> 9.3)</p>
+</div>
+</footer>
+</body>
+</html>

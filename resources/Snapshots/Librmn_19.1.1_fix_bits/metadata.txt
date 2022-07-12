@@ -1,0 +1,4 @@
+Parent  : Librmn_19.1.1
+Author  : Philippe Carphin
+Date    : 2022/01/01
+Changes : Fix part of the problem with endianness
